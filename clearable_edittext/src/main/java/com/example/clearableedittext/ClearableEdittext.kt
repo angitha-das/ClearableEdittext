@@ -2,6 +2,7 @@ package com.example.clearableedittext
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -12,11 +13,19 @@ import android.widget.EditText
 
 /**
  * Created by angitha on 3/11/17.
+ *
+ * Makes the edittext clearable with
+ * attributes clear,to enable feature and
+ * clear_icon to set custom drawable on right
  */
 class ClearableEdittext:android.support.v7.widget.AppCompatEditText, View.OnTouchListener, View.OnFocusChangeListener,TextWatcherAdapter.TextWatcherListener{
     private var dRight: Drawable? = null
     private var icon: Drawable? = null
     private var clear = false
+
+    constructor(context: Context) : super(context){
+        init()
+    }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         processAttr(context, attrs)
@@ -41,6 +50,24 @@ class ClearableEdittext:android.support.v7.widget.AppCompatEditText, View.OnTouc
         }
     }
 
+    /**
+     *
+     */
+    fun enableClearable(isClearable: Boolean){
+        clear = isClearable
+        init()
+    }
+
+    fun setClearDrawableResource(resId: Int){
+        icon = ContextCompat.getDrawable(context, resId)
+        init()
+    }
+
+    fun setClearDrawable(drawable: Drawable){
+        icon = drawable
+        init()
+    }
+
     private fun clearFunctionality() {
         checkCompoundDrawable()
         handleClearButton()
@@ -53,7 +80,6 @@ class ClearableEdittext:android.support.v7.widget.AppCompatEditText, View.OnTouc
         dRight = if (icon != null) {
             icon //compoundDrawables[2];
         } else {
-
             ResourcesCompat.getDrawable(resources, R.drawable.ic_clear_black_24dp, null)
         }
         dRight!!.setBounds(0, 0, dRight!!.intrinsicWidth, dRight!!.intrinsicHeight)
@@ -102,5 +128,4 @@ class ClearableEdittext:android.support.v7.widget.AppCompatEditText, View.OnTouc
     override fun onTextChanged(view: EditText, text: String) {
         this@ClearableEdittext.handleClearButton()
     }
-
 }
